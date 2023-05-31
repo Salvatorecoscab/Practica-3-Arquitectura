@@ -24,7 +24,7 @@ Port ( clk : in  STD_LOGIC;
 end component;
 
 
-
+-- Comentario Nuevo 
 
 
 -----------------------------Funciones---------------------------
