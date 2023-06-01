@@ -1,7 +1,7 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 ---------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
-| Date         : Wed May 31 00:44:54 2023
+| Date         : Wed May 31 22:45:55 2023
 | Host         : Salvatore running 64-bit major release  (build 9200)
 | Command      : report_utilization -file aluP_utilization_synth.rpt -pb aluP_utilization_synth.pb
 | Design       : aluP
@@ -31,13 +31,13 @@ Table of Contents
 +-------------------------+------+-------+------------+-----------+-------+
 |        Site Type        | Used | Fixed | Prohibited | Available | Util% |
 +-------------------------+------+-------+------------+-----------+-------+
-| Slice LUTs*             |  652 |     0 |          0 |     20800 |  3.13 |
-|   LUT as Logic          |  652 |     0 |          0 |     20800 |  3.13 |
+| Slice LUTs*             |  430 |     0 |          0 |     20800 |  2.07 |
+|   LUT as Logic          |  430 |     0 |          0 |     20800 |  2.07 |
 |   LUT as Memory         |    0 |     0 |          0 |      9600 |  0.00 |
 | Slice Registers         |    0 |     0 |          0 |     41600 |  0.00 |
 |   Register as Flip Flop |    0 |     0 |          0 |     41600 |  0.00 |
 |   Register as Latch     |    0 |     0 |          0 |     41600 |  0.00 |
-| F7 Muxes                |    0 |     0 |          0 |     16300 |  0.00 |
+| F7 Muxes                |    3 |     0 |          0 |     16300 |  0.02 |
 | F8 Muxes                |    0 |     0 |          0 |      8150 |  0.00 |
 +-------------------------+------+-------+------------+-----------+-------+
 * Warning! The Final LUT count, after physical optimizations and full implementation, is typically lower. Run opt_design after synthesis, if not already completed, for a more realistic count.
@@ -151,14 +151,15 @@ Warning! LUT value is adjusted to account for LUT combining.
 +----------+------+---------------------+
 | Ref Name | Used | Functional Category |
 +----------+------+---------------------+
-| LUT4     |  328 |                 LUT |
-| LUT6     |  277 |                 LUT |
-| LUT5     |  179 |                 LUT |
-| LUT3     |   80 |                 LUT |
-| CARRY4   |   62 |          CarryLogic |
+| LUT6     |  211 |                 LUT |
+| LUT4     |  139 |                 LUT |
+| LUT5     |  130 |                 LUT |
 | IBUF     |   36 |                  IO |
+| LUT3     |   35 |                 LUT |
+| CARRY4   |   29 |          CarryLogic |
 | OBUF     |   20 |                  IO |
-| LUT2     |    8 |                 LUT |
+| LUT2     |   12 |                 LUT |
+| MUXF7    |    3 |               MuxFx |
 +----------+------+---------------------+
 
 
