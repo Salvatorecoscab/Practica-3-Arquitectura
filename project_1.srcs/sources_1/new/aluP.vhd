@@ -70,22 +70,6 @@ begin
     overflow:= carryv xor sum(a'length-1);
     
 end procedure add;
-function addF (a: std_logic_vector; b: std_logic_vector;ctr: std_logic) return std_logic_vector is
-    variable sum: std_logic_vector(a'length downto 0);
-    variable carry,bs: std_logic;
-
-begin
-    sum := (others => '0');
-    carry := ctr;
-
-    for i in 0 to a'length-1 loop
-        bs:= ctr xor b(i);
-        sum(i) := a(i) xor bs xor carry;
-        carry := (a(i) and bs) or (a(i) and carry) or (bs and carry);
-    end loop;
-    sum(a'length):=carry;
-    return sum;
-end function addF;
 procedure multiply(
     a : in std_logic_vector; 
     b : in std_logic_vector;

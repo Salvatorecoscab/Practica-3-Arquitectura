@@ -1,4 +1,4 @@
-Running: xsim.dir/aluP_behav/xsimk.exe -simmode gui -wdb aluP_behav.wdb -simrunnum 0 -socket 53456
+Running: xsim.dir/aluP_behav/xsimk.exe -simmode gui -wdb aluP_behav.wdb -simrunnum 0 -socket 57062
 Design successfully loaded
-Design Loading Memory Usage: 7776 KB (Peak: 7776 KB)
+Design Loading Memory Usage: 7820 KB (Peak: 7820 KB)
 Design Loading CPU Usage: 0 ms
