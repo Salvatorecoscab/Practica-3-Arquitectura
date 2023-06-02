@@ -501,11 +501,11 @@ case actual is
         when "11"=>dato2:=regD;
         when others=>dato2:=regA;
     end case;
-    comparer(dato1,dato2, gt,eq,lt);
+    --comparer(dato1,dato2, gt,eq,lt);
     if(eq = '1') then 
         sig<=fetch;
     else
-        pcreg:=mdr(9 downto 0); 
+        pcreg:=mdr(7 downto 0); 
         sig<=fetch;
     end if;
     --          BS            -- bnc, bnv
