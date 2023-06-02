@@ -4,7 +4,7 @@
 
 set TIME_start [clock seconds] 
 namespace eval ::optrace {
-  variable script "C:/Users/Salvadorcoscab/Documents/vhdlPracticas/project_1/project_1.runs/synth_1/aluP.tcl"
+  variable script "Z:/Projects/VivadoProjects/Practica3/project_1.runs/synth_1/main.tcl"
   variable category "vivado_synth"
 }
 
@@ -70,21 +70,27 @@ proc create_report { reportName command } {
   }
 }
 OPTRACE "synth_1" START { ROLLUP_AUTO }
+set_param chipscope.maxJobs 2
 OPTRACE "Creating in-memory project" START { }
 create_project -in_memory -part xc7a35tcpg236-1
 
 set_param project.singleFileAddWarning.threshold 0
 set_param project.compositeFile.enableAutoGeneration 0
 set_param synth.vivado.isSynthRun true
-set_property webtalk.parent_dir C:/Users/Salvadorcoscab/Documents/vhdlPracticas/project_1/project_1.cache/wt [current_project]
-set_property parent.project_path C:/Users/Salvadorcoscab/Documents/vhdlPracticas/project_1/project_1.xpr [current_project]
+set_property webtalk.parent_dir Z:/Projects/VivadoProjects/Practica3/project_1.cache/wt [current_project]
+set_property parent.project_path Z:/Projects/VivadoProjects/Practica3/project_1.xpr [current_project]
 set_property default_lib xil_defaultlib [current_project]
 set_property target_language Verilog [current_project]
-set_property ip_output_repo c:/Users/Salvadorcoscab/Documents/vhdlPracticas/project_1/project_1.cache/ip [current_project]
+set_property ip_output_repo z:/Projects/VivadoProjects/Practica3/project_1.cache/ip [current_project]
 set_property ip_cache_permissions {read write} [current_project]
 OPTRACE "Creating in-memory project" END { }
 OPTRACE "Adding files" START { }
-read_vhdl -library xil_defaultlib C:/Users/Salvadorcoscab/Documents/vhdlPracticas/project_1/project_1.srcs/sources_1/new/aluP.vhd
+read_vhdl -library xil_defaultlib {
+  Z:/Projects/VivadoProjects/Practica3/project_1.srcs/sources_1/imports/components/BinaryTo7Segments.vhd
+  Z:/Projects/VivadoProjects/Practica3/project_1.srcs/sources_1/imports/components/binBCD.vhd
+  Z:/Projects/VivadoProjects/Practica3/project_1.srcs/sources_1/imports/components/bintodisp.vhd
+  Z:/Projects/VivadoProjects/Practica3/project_1.srcs/sources_1/new/main.vhd
+}
 OPTRACE "Adding files" END { }
 # Mark all dcp files as not used in implementation to prevent them from being
 # stitched into the results of this synthesis run. Any black boxes in the
@@ -96,11 +102,11 @@ foreach dcp [get_files -quiet -all -filter file_type=="Design\ Checkpoint"] {
 }
 set_param ips.enableIPCacheLiteLoad 1
 
-read_checkpoint -auto_incremental -incremental C:/Users/Salvadorcoscab/Documents/vhdlPracticas/project_1/project_1.srcs/utils_1/imports/synth_1/main.dcp
+read_checkpoint -auto_incremental -incremental Z:/Projects/VivadoProjects/Practica3/project_1.srcs/utils_1/imports/synth_1/main.dcp
 close [open __synthesis_is_running__ w]
 
 OPTRACE "synth_design" START { }
-synth_design -top aluP -part xc7a35tcpg236-1
+synth_design -top main -part xc7a35tcpg236-1
 OPTRACE "synth_design" END { }
 if { [get_msg_config -count -severity {CRITICAL WARNING}] > 0 } {
  send_msg_id runtcl-6 info "Synthesis results are not added to the cache due to CRITICAL_WARNING"
@@ -110,10 +116,10 @@ if { [get_msg_config -count -severity {CRITICAL WARNING}] > 0 } {
 OPTRACE "write_checkpoint" START { CHECKPOINT }
 # disable binary constraint mode for synth run checkpoints
 set_param constraints.enableBinaryConstraints false
-write_checkpoint -force -noxdef aluP.dcp
+write_checkpoint -force -noxdef main.dcp
 OPTRACE "write_checkpoint" END { }
 OPTRACE "synth reports" START { REPORT }
-create_report "synth_1_synth_report_utilization_0" "report_utilization -file aluP_utilization_synth.rpt -pb aluP_utilization_synth.pb"
+create_report "synth_1_synth_report_utilization_0" "report_utilization -file main_utilization_synth.rpt -pb main_utilization_synth.pb"
 OPTRACE "synth reports" END { }
 file delete __synthesis_is_running__
 close [open __synthesis_is_complete__ w]

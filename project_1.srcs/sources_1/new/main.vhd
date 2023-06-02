@@ -324,7 +324,7 @@ type ROM_MEMORY_array is array(0 to 80) of std_logic_vector(15 downto 0);
 		  
         OTHERS => "0000000000000000"
         );
-type estados is (init, fetch, decode, load,load1,load2, operation,operation1,endprog,send,move,comp,salto,BNZ,BOV,BC,JMP);
+type estados is (init, fetch, decode, load,load1,load2, operation,operation1,endprog,send,move,comp,jmp, jalr, bnz, bs, bnc, bnv, ret);
 signal actual, sig: estados;
 --------------------Signals----------------------
 signal sal,initialice: std_logic_vector(7 downto 0);
@@ -341,10 +341,23 @@ variable pcvar: std_logic_vector(7 downto 0);
 variable mdr: std_logic_vector(15 downto 0);
 variable res: std_logic_vector(15 downto 0);
 variable pcreg: std_logic_vector(7 downto 0);
+
 variable mar: std_logic_vector(7 downto 0);
 variable cir: std_logic_vector(7 downto 0);
 variable nu1,nu2,nu4,nu3: std_logic;
 variable acc,regA,regB,regC,regD,op1,dato1,dato2: std_logic_vector(15 downto 0);
+
+variable ret_pc: std_logic_vector(7 downto 0);
+
+variable carry :  std_logic;
+variable overflow: std_logic;
+variable Zero: std_logic;
+variable Neg: std_logic;
+
+variable gt: std_logic; 
+variable eq: std_logic; 
+variable lt: std_logic;
+
 begin
 if rst='1' then
     actual <= init;
@@ -368,6 +381,7 @@ case actual is
     --              DECODE          --
     when decode=>
     case cir(7 downto 4) is
+    
     when "0000" =>
     case cir(1 downto 0) is
         when "00"=>acc:=regA;
@@ -377,71 +391,51 @@ case actual is
         when others=>acc:=(others=>'0');
         end case;
     sig<=fetch;
-    
+    -- Nuevas Intrucciones --
     when "0001" =>
-    mar:=mdr(7 downto 0);
-    sig<=operation;
-    -- not
+    sig<=jmp;
     when "0010" =>
-    mar:=mdr(7 downto 0);
-    sig<=operation;
-    --and  
+    sig<=jalr;
     when "0011" =>
-    mar:=mdr(7 downto 0);
-    sig<=operation;
-    --or
-    --when "0100" =>
-    --mar:=mdr(7 downto 0);
-    --sig<=operation;
-    --LSL
+    sig<=bnz;
     when "0100" =>
-    mar:=mdr(7 downto 0);
-    sig<=operation;
-    --ASR
-    --when "0100" =>
-    --mar:=mdr(7 downto 0);
-    --sig<=operation;
-    --add
+    sig<=bs;
+    when "0101" =>
+    sig<=bnc;
+    when "0110" =>
+    sig<=bnv;
+    --     FIN   --
+    -- ADD
     when "0111" =>
     mar:=mdr(7 downto 0);
     sig<=operation;
-    --sub
+    -- SUBTRACT
     when "1000" =>
     mar:=mdr(7 downto 0);
     sig<=operation;
-    --multi
+    -- MULTI
     when "1001" =>
     mar:=mdr(7 downto 0);
     sig<=operation;
-    --div
-    when "1010" =>
-    mar:=mdr(7 downto 0);
-    sig<=operation;
-    --cargar registro especifico
+    -- LOAD
     when "1011" =>
     mar:=mdr(7 downto 0);
     sig<=load;
-    --mover entre registros
+    -- DIVIDE
+    when "1010" =>
+    mar:=mdr(7 downto 0);
+    sig<=operation;
+    -- RETURN
     when "1100" =>
-    sig<=move;
-    --enviar al display
-    -- when "1101" =>
-    -- case cir(1 downto 0) is
-    --     when "00"=>sal<=regA;
-    --     when "01"=>sal<=regB;
-    --     when "10"=>sal<=regC;
-    --     when "11"=>sal<=regD;
-    --     when others=>sal<=(others=>'0');
-    --     end case;
-    -- sig<=send;
-
-    -- salto a dir especific a
-    when "1101"=>
-    sig<=salto;
-    --comparador
+    mar:=mdr(7 downto 0);
+    sig<=ret;
+    -- SEND DISP
+    when "1101" =>
+    mar:=mdr(7 downto 0);
+    sig<=send;
+    -- COMPARADOR
     when "1110"=>
     sig<=comp;
-    
     --fin del programa
     when "1111" =>
     sig<=endprog;
@@ -485,28 +479,50 @@ case actual is
 
 
    --             saltos            --
-    when salto =>
-        case cir(1 downto 0) is
-            when "00"=>sig<=JMP;
-            when "01"=>sig<=BNZ;
-            when "10"=>sig<=BOV;
-            when "11"=>sig<=BC;
-            when others=>sig<=init;
-        end case;
-    
-    when JMP=>
-        pcreg:=mdr(7 downto 0);
+  --          JUMP            --
+    when jmp=>
+        pcreg:=mdr(7 downto 0); 
+    sig<=fetch;
+    --          JALR           
+    when jalr=>
+         ret_pc:=pcreg;
+         pcreg:=mdr(7 downto 0);
+    sig<=fetch;
+    when ret=>
+        pcreg:= ret_pc;
+        ret_pc:="00000000";
+    --          BNZ           
+    when bnz=>
+    dato1:= "0000000000000000";
+    case cir(3 downto 2) is
+        when "00"=>dato2:=regA;
+        when "01"=>dato2:=regB;
+        when "10"=>dato2:=regC;
+        when "11"=>dato2:=regD;
+        when others=>dato2:=regA;
+    end case;
+    comparer(dato1,dato2, gt,eq,lt);
+    if(eq = '1') then 
         sig<=fetch;
-        
-    when BNZ=>
+    else
+        pcreg:=mdr(9 downto 0); 
         sig<=fetch;
-    when BOV=>
-        sig<=fetch;
-    when BC=>
-        sig<=fetch;
-        
-
-
+    end if;
+    --          BS            -- bnc, bnv
+    when bs=>
+  
+  
+    sig<=fetch;
+     --          BNC            --  bnv
+    when bnc=>
+  
+  
+    sig<=fetch;
+      --          BNV            -- bnc, bnv
+    when bnv=>
+  
+  
+    sig<=fetch;
     when comp=>
     case cir(1 downto 0) is
         when "00"=>dato1:=regA;

@@ -1,0 +1,46 @@
+#-----------------------------------------------------------
+# Vivado v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Fri Jun  2 13:32:37 2023
+# Process ID: 28772
+# Current directory: Z:/Projects/VivadoProjects/Practica3/project_1.runs/synth_1
+# Command line: vivado.exe -log main.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source main.tcl
+# Log file: Z:/Projects/VivadoProjects/Practica3/project_1.runs/synth_1/main.vds
+# Journal file: Z:/Projects/VivadoProjects/Practica3/project_1.runs/synth_1\vivado.jou
+# Running On: LAPTOP-DUV0U3BT, OS: Windows, CPU Frequency: 2496 MHz, CPU Physical cores: 4, Host memory: 25598 MB
+#-----------------------------------------------------------
+source main.tcl -notrace
+Command: read_checkpoint -auto_incremental -incremental Z:/Projects/VivadoProjects/Practica3/project_1.srcs/utils_1/imports/synth_1/main.dcp
+INFO: [Vivado 12-5825] Read reference checkpoint from Z:/Projects/VivadoProjects/Practica3/project_1.srcs/utils_1/imports/synth_1/main.dcp for incremental synthesis
+INFO: [Vivado 12-7989] Please ensure there are no constraint changes
+Command: synth_design -top main -part xc7a35tcpg236-1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a35t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a35t'
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 29524
+INFO: [Synth 8-11241] undeclared symbol 'REGCCE', assumed default net type 'wire' [C:/Xilinx/Vivado/2022.2/data/verilog/src/unimacro/BRAM_SINGLE_MACRO.v:2170]
+---------------------------------------------------------------------------------
+Starting Synthesize : Time (s): cpu = 00:00:03 ; elapsed = 00:00:05 . Memory (MB): peak = 823.824 ; gain = 410.059
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'main' [Z:/Projects/VivadoProjects/Practica3/project_1.srcs/sources_1/new/main.vhd:15]
+INFO: [Synth 8-226] default block is never used [Z:/Projects/VivadoProjects/Practica3/project_1.srcs/sources_1/new/main.vhd:383]
+INFO: [Synth 8-226] default block is never used [Z:/Projects/VivadoProjects/Practica3/project_1.srcs/sources_1/new/main.vhd:386]
+INFO: [Synth 8-226] default block is never used [Z:/Projects/VivadoProjects/Practica3/project_1.srcs/sources_1/new/main.vhd:453]
+INFO: [Synth 8-226] default block is never used [Z:/Projects/VivadoProjects/Practica3/project_1.srcs/sources_1/new/main.vhd:467]
+INFO: [Synth 8-226] default block is never used [Z:/Projects/VivadoProjects/Practica3/project_1.srcs/sources_1/new/main.vhd:497]
+ERROR: [Synth 8-318] illegal unconstrained array declaration 'g' [Z:/Projects/VivadoProjects/Practica3/project_1.srcs/sources_1/new/main.vhd:172]
+ERROR: [Synth 8-318] illegal unconstrained array declaration 'l' [Z:/Projects/VivadoProjects/Practica3/project_1.srcs/sources_1/new/main.vhd:172]
+ERROR: [Synth 8-318] illegal unconstrained array declaration 'e' [Z:/Projects/VivadoProjects/Practica3/project_1.srcs/sources_1/new/main.vhd:172]
+ERROR: [Synth 8-285] failed synthesizing module 'main' [Z:/Projects/VivadoProjects/Practica3/project_1.srcs/sources_1/new/main.vhd:15]
+---------------------------------------------------------------------------------
+Finished Synthesize : Time (s): cpu = 00:00:04 ; elapsed = 00:00:07 . Memory (MB): peak = 914.680 ; gain = 500.914
+---------------------------------------------------------------------------------
+synthesize failed
+INFO: [Common 17-83] Releasing license: Synthesis
+14 Infos, 0 Warnings, 0 Critical Warnings and 5 Errors encountered.
+synth_design failed
+ERROR: [Common 17-69] Command failed: Vivado Synthesis failed
+INFO: [Common 17-206] Exiting Vivado at Fri Jun  2 13:32:50 2023...
