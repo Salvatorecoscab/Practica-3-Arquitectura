@@ -35,6 +35,7 @@ procedure add (a: in std_logic_vector;
     variable carryv,bs: std_logic;
 
 begin
+   
     sum := (others => '0');
     carryv := ctr;
 
@@ -109,13 +110,13 @@ begin
 end procedure;
 
 procedure comp1 (
-    x: in std_logic;
-    y: in std_logic;
-    gin: in std_logic;
-    lin: in std_logic;
-    gout: out std_logic;
-    lout: out std_logic;
-    eout: out std_logic
+    variable x: in std_logic;
+    variable y: in std_logic;
+    variable gin: in std_logic;
+    variable lin: in std_logic;
+    variable gout: out std_logic;
+    variable lout: out std_logic;
+    variable eout: out std_logic
 ) is
 
 begin
@@ -126,22 +127,29 @@ begin
 end procedure;
 
 procedure comparer (
-    a : in std_logic_vector;
-    b : in std_logic_vector;
-    eq : out std_logic;
-    gt : out std_logic;
-    lt : out std_logic
+    variable a : in std_logic_vector;
+    variable b : in std_logic_vector;
+    variable gt : out std_logic;
+    variable eq : out std_logic;
+    variable lt : out std_logic
 )is
     variable g,l,e: std_logic_vector(a'length downto 0);
+
 begin
+ if(True)then
     g(0):='0';
     l(0):='0';
-    for i in 0 to a'length - 1 loop
+    for i in 0 to a'length-1 loop
         comp1(a(i),b(i),g(i),l(i),g(i+1),l(i+1),e(i+1));
     end loop;
     eq:=e(a'length);
     gt:=g(a'length);
     lt:=l(a'length);
+    else
+    eq:='0';
+    gt:='0';
+    lt:='0';
+    end if;
 end procedure;
 
 
@@ -228,8 +236,9 @@ type ROM_MEMORY_array is array(0 to 80) of std_logic_vector(15 downto 0);
           31=> "0000000000000000", -- Zero
           
           --Programa 2
-          32=> "1011000000011011", -- LOAD X in r1
-          33=> "0000000000000000", -- send r1 to acc
+          32=> "0111111111111111", -- 0
+          33=> "0000000000000001", -- Valor de 1
+          
           34=> "1001000000000000", -- MULTI acc by X=r1 and store r1
           35=> "1011000100010111", -- LOAD 5 in r2
           36=> "0000000100000000", -- send r2 to acc
@@ -253,9 +262,12 @@ type ROM_MEMORY_array is array(0 to 80) of std_logic_vector(15 downto 0);
 		  51=> "1111000000000000", -- FIN DEL PROGRAMA
 		  --programa 4
 		  52=> "1011000000011111", -- LOAD Zero in r1
-		  53=> "1101000000000000", -- send r1 to display
-		  54=> "1111000000000000", -- FIN DEL PROGRAMA
+		  
+		  
+		  
+		  
 		  --Programa 3
+          
           55=> "1011000000011011", -- LOAD X in r1
           56=> "0000000000000000", -- send r1 to acc
           57=> "1001000000000000", -- MULTI acc by X=r1 and store r1
@@ -265,28 +277,31 @@ type ROM_MEMORY_array is array(0 to 80) of std_logic_vector(15 downto 0);
 		  
 		  61=> "1011000100011110", -- LOAD Z in r2
 		  62=> "0000000100000000", -- send r2 to acc
+
 		  63=> "1011000100010111", -- LOAD 5 in r2
 		  64=> "1001010100000000", -- MULTI acc by 5=r2 and store r2
 		  65=> "0000000100000000", -- send r2 to acc	 
 		  66=> "0111000000000000", --add acc by r1 and store r1
-		  67=> "0010000000000000",-- COMP2 r1 and store r1
-		  
-		  68=> "1011000100010111", -- LOAD 5 in r2
-		  69=> "0000000100000000", -- send r2 to acc
-		  70=> "1011000100011101", -- LOAD W in r2
-		  71=> "1010010100011001", -- DIVIDE r2 from acc and store r2
-		  72=> "0000000100000000", -- send r2 to acc
-		  73=> "0111000000000000", -- ADD r1 from acc and store r1
-		  74=> "1101000000000000", -- send r1 to display
-		  75=> "1111000000000000", -- FIN DEL PROGRAMA
-		 
-		  
-		  
+		  --67=> "0010000000000000",-- COMP2 r1 and store r1
+		  67=> "1011000100010111", -- LOAD 5 in r2
+		  68=> "0000000100000000", -- send r2 to acc
+		  69=> "1011000100011101", -- LOAD W in r2
+		  70=> "1010010100011001", -- DIVIDE r2 from acc and store r2
+		  71=> "0000000100000000", -- send r2 to acc
+		  72=> "0111000000000000", -- ADD r1 from acc and store r1
+		  73=> "1011001000100000", -- LOAD DIRECCION MEMORIA 32 in r3
 
+		  74=> "1101000000000000", -- send r1 to display
+		  75=> "1011001100100001", -- LOAD DIRECCION MEMORIA 33 in r4
+		  76=> "0000001100000000", -- send r4 to acc
+		  77=> "1000101000000000", -- SUBTRACR R3 - acc and store in r3
 		  
+		  78=> "0011100001001010", -- BNZ regC
+		  
+		  79=> "1111000000000000", -- FIN DEL PROGRAMA
         OTHERS => "0000000000000000"
         );
-type estados is (init, fetch, decode, load,load1,load2, operation,operation1,endprog,send,jmp,jalr,comp,bnc,bnz,bnv,move,bs,ret);
+type estados is (init, fetch, decode, load,load1,load2, operation,operation1,endprog,send,jmp,jalr,comp,bnc,bnz,bnv,move,bs,ret, bnz2);
 signal actual, sig: estados;
 --------------------Signals----------------------
 signal sal: std_logic_vector(15 downto 0);
@@ -294,6 +309,9 @@ signal resaum: std_logic_vector(11 downto 0);
 signal getsal :std_logic;
 signal seld: std_logic_vector(1 downto 0);
 signal initialice: std_logic_vector(7 downto 0);
+signal rg1,rg2,rg3,rg4: std_logic_vector(15 downto 0);
+signal pcsig: std_logic_vector(7 downto 0);
+signal equal : std_logic;
 begin
 
 clko<=clk;
@@ -322,7 +340,7 @@ if rst='1' then
 elsif rising_edge (clk) then
 actual<=sig;
 case actual is 
-    --              INIT            --
+     --              INIT            --
 	when init=>
 	pcreg:=initialice;
     getsal<='0';
@@ -332,7 +350,7 @@ case actual is
 	mar:=pcreg;
 	mdr:= Content(to_integer(unsigned(pcreg)));
 	cir:= Content(to_integer(unsigned(pcreg)))(15 downto 8);
-	alu("00000000"&pcreg,"0000000000000001","0111",pcvar,nu1,nu2,nu3,nu4);
+	alu("00000000"&pcreg,"0000000000000001","0111",pcvar,nu1,nu2,nu3,nu4); -- Aqui se suma el pcreg
 	pcreg:=pcvar(7 downto 0);
 	sig<=decode;
 	
@@ -354,8 +372,10 @@ case actual is
     sig<=jmp;
     when "0010" =>
     sig<=jalr;
+    
     when "0011" =>
     sig<=bnz;
+    
     when "0100" =>
     sig<=bs;
     when "0101" =>
@@ -446,7 +466,7 @@ case actual is
   --          JUMP            --
     when jmp=>
         pcreg:=mdr(7 downto 0); 
-    sig<=fetch;
+        sig<=fetch;
     --          JALR           
     when jalr=>
          ret_pc:=pcreg;
@@ -456,6 +476,7 @@ case actual is
         pcreg:= ret_pc;
         ret_pc:="00000000";
     --          BNZ      -- Compara registro especifico     
+    
     when bnz=>
     dato1:= "0000000000000000";
     case cir(3 downto 2) is
@@ -465,13 +486,20 @@ case actual is
         when "11"=>dato2:=regD;
         when others=>dato2:=regA;
     end case;
+   
     comparer(dato1,dato2, gt,eq,lt);
+    equal <= eq;
+    sig<=bnz2;
+    
+    when bnz2 =>
+    
     if(eq = '1') then 
         sig<=fetch;
     else
         pcreg:=mdr(7 downto 0); 
         sig<=fetch;
     end if;
+    
     --          BS            -- Compara registro especifico
     when bs=>
     case cir(3 downto 2) is
@@ -534,8 +562,12 @@ case actual is
 	when others=>sig<=init;
 	 	
 end case;
-  
-    
+  rg1<=regA;  
+  rg2<=regB;  
+  rg3<=regC;  
+  rg4<=regD;  
+  pcsig<=pcreg;
+  equal<=eq;
 end if;
 
 end process;
@@ -549,7 +581,7 @@ initialicepc: process (sel,clk) is begin
     case sel is
         when "00"=>initialice<="00000000";
         when "01"=>initialice<="00100000";
-        when "10"=>initialice<="00110111";
+        when "10"=>initialice<="00110110";
         when "11"=>initialice<="00110100";
         when others=>null;
         end case;

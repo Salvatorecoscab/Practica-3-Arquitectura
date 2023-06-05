@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="main_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="main" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="20,010,500 ps"></ZoomStartTime>
+      <ZoomEndTime time="20,010,507 ps"></ZoomEndTime>
+      <Cursor1Time time="20,999,996 ps"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="217"></NameColumnWidth>
+      <ValueColumnWidth column_width="120"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="20" />
+   <wvobject fp_name="/main/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/segment" type="array">
+      <obj_property name="ElementShortName">segment[6:0]</obj_property>
+      <obj_property name="ObjectShortName">segment[6:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/display" type="array">
+      <obj_property name="ElementShortName">display[3:0]</obj_property>
+      <obj_property name="ObjectShortName">display[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/clko" type="logic">
+      <obj_property name="ElementShortName">clko</obj_property>
+      <obj_property name="ObjectShortName">clko</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/sel" type="array">
+      <obj_property name="ElementShortName">sel[1:0]</obj_property>
+      <obj_property name="ObjectShortName">sel[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/actual" type="other">
+      <obj_property name="ElementShortName">actual</obj_property>
+      <obj_property name="ObjectShortName">actual</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/sig" type="other">
+      <obj_property name="ElementShortName">sig</obj_property>
+      <obj_property name="ObjectShortName">sig</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/sal" type="array">
+      <obj_property name="ElementShortName">sal[15:0]</obj_property>
+      <obj_property name="ObjectShortName">sal[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/resaum" type="array">
+      <obj_property name="ElementShortName">resaum[11:0]</obj_property>
+      <obj_property name="ObjectShortName">resaum[11:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/getsal" type="logic">
+      <obj_property name="ElementShortName">getsal</obj_property>
+      <obj_property name="ObjectShortName">getsal</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/seld" type="array">
+      <obj_property name="ElementShortName">seld[1:0]</obj_property>
+      <obj_property name="ObjectShortName">seld[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/initialice" type="array">
+      <obj_property name="ElementShortName">initialice[7:0]</obj_property>
+      <obj_property name="ObjectShortName">initialice[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/rg1" type="array">
+      <obj_property name="ElementShortName">rg1[15:0]</obj_property>
+      <obj_property name="ObjectShortName">rg1[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/rg2" type="array">
+      <obj_property name="ElementShortName">rg2[15:0]</obj_property>
+      <obj_property name="ObjectShortName">rg2[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/rg3" type="array">
+      <obj_property name="ElementShortName">rg3[15:0]</obj_property>
+      <obj_property name="ObjectShortName">rg3[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/rg4" type="array">
+      <obj_property name="ElementShortName">rg4[15:0]</obj_property>
+      <obj_property name="ObjectShortName">rg4[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/pcsig" type="array">
+      <obj_property name="ElementShortName">pcsig[7:0]</obj_property>
+      <obj_property name="ObjectShortName">pcsig[7:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/equal" type="logic">
+      <obj_property name="ElementShortName">equal</obj_property>
+      <obj_property name="ObjectShortName">equal</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/Content" type="array">
+      <obj_property name="ElementShortName">Content[0:80][15:0]</obj_property>
+      <obj_property name="ObjectShortName">Content[0:80][15:0]</obj_property>
+   </wvobject>
+</wave_config>
