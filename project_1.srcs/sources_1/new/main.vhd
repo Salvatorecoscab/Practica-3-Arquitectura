@@ -54,22 +54,15 @@ procedure multiply(
     m : out std_logic_vector) is
     variable pv : std_logic_vector(a'length+b'length-1 downto 0);
     variable bp : std_logic_vector(a'length+b'length-1 downto 0);
-    variable pv : std_logic_vector(a'length+b'length-1 downto 0);
-    variable bp : std_logic_vector(a'length+b'length-1 downto 0);
     variable carry : std_logic;
-    variable ov : std_logic;
     variable ov : std_logic;
 begin
     pv := (others => '0');
     bp := "00000000"&b;
     for i in 0 to a'length-1 loop
-    bp := "00000000"&b;
-    for i in 0 to a'length-1 loop
         if a(i) = '1' then
             add(pv, bp, '0',pv,ov,carry);
-            add(pv, bp, '0',pv,ov,carry);
         end if;
-        bp := bp(a'length+b'length-2 downto 0) & '0';
         bp := bp(a'length+b'length-2 downto 0) & '0';
     end loop;
     m := pv;
@@ -83,7 +76,6 @@ procedure div8(
 variable d, n1: std_logic_vector(8 downto 0);
 variable n2: std_logic_vector(7 downto 0);
 variable carry: std_logic;
-variable overflow: std_logic;
 variable overflow: std_logic;
 begin
     d := '0' & denom;
@@ -165,20 +157,7 @@ procedure alu ( a: in std_logic_vector(15 downto 0);
                 Neg: out std_logic) is
     variable zfv: std_logic;
     variable Zv: std_logic_vector(15 downto 0);
-procedure alu ( a: in std_logic_vector(15 downto 0); 
-                b: in std_logic_vector(15 downto 0); 
-                F: in std_logic_vector(3 downto 0); 
-                Z: out std_logic_vector(15 downto 0); 
-                carry : out std_logic;
-                overflow: out std_logic;
-                Zero: out std_logic; 
-                Neg: out std_logic) is
-    variable zfv: std_logic;
-    variable Zv: std_logic_vector(15 downto 0);
     begin
-        carry:='0';
-        overflow:='0';
-        zfv:='0';
         carry:='0';
         overflow:='0';
         zfv:='0';
@@ -195,20 +174,7 @@ procedure alu ( a: in std_logic_vector(15 downto 0);
             when "1001" => multiply(a(7 downto 0), b(7 downto 0),Zv);--multiplicacion 8 bits
             when "1010" => 
             div16(a,b(7 downto 0),Zv); --division 16/8 bits
-            when "0001" => Zv := not a;
-            when "0010" => add("0000000000000000",a,'1',Zv,overflow,carry);-- complemento a 2
-            when "0011" => Zv := a and b;
-            when "0100" => Zv := a or b;
-            when "0101" => Zv := a(14 downto 0) & '0';
-            when "0110" => Zv := a(a'length-1)&a(a'length-1 downto 1);
-            when "0111" => add(a,b,'0',Zv,overflow,carry);--suma
-            when "1000" => add(a,b,'1',Zv,overflow,carry);--resta
-       
-            when "1001" => multiply(a(7 downto 0), b(7 downto 0),Zv);--multiplicacion 8 bits
-            when "1010" => 
-            div16(a,b(7 downto 0),Zv); --division 16/8 bits
          
-            when others => Zv := (others=>'0');
             when others => Zv := (others=>'0');
         end case;
         for i in 0 to 15 loop
@@ -217,14 +183,8 @@ procedure alu ( a: in std_logic_vector(15 downto 0);
         Zero:= not zfv;
         Neg:= Zv(15);
         Z := Zv;
-        for i in 0 to 15 loop
-            zfv:= zfv or Zv(i);
-        end loop;
-        Zero:= not zfv;
-        Neg:= Zv(15);
-        Z := Zv;
     end procedure alu;
-  
+    
 ------------------Maquina de estadoos-----------------------
 type ROM_MEMORY_array is array(0 to 80) of std_logic_vector(15 downto 0);
     constant Content: ROM_MEMORY_array:=(
@@ -240,46 +200,19 @@ type ROM_MEMORY_array is array(0 to 80) of std_logic_vector(15 downto 0);
 		  8=> "0000000100000000", --send r2 to acc
 		  9=> "0111000000000000", --add acc by r1 and store r1	
 		  10=>"1011000100010110", -- LOAD 4 in r2	 
-          0=> "1011000000010100", -- LOAD 13 in r1
-          1=> "0000000000000000", -- send r1 to acc
-          2=> "1011000000011011", -- LOAD X in r1
-          3=> "1001000000000000", -- MULTI acc by X=r1 and store r1
-          4=> "1011000100010101", -- LOAD 23 in r2
-		  5=> "0000000100000000", -- send r2 to acc
-		  6=> "1011000100011100", -- LOAD Y in r2
-		  7=> "1001010100000000", --MULTI acc by Y=r2 and store r2
-		  8=> "0000000100000000", --send r2 to acc
-		  9=> "0111000000000000", --add acc by r1 and store r1	
-		  10=>"1011000100010110", -- LOAD 4 in r2	 
 		  
 		  11=> "0000000100000000", -- send r2 to acc
 		  12=> "1011000100011101", -- LOAD W in r2
 		  13=> "1010010100000000", -- DIVIDE r2 from acc and store r2
 		  14=> "0000000100000000", -- send r2 to acc
 		  15=> "1000000000000000", -- substract r1 from acc and store r1
-		  11=> "0000000100000000", -- send r2 to acc
-		  12=> "1011000100011101", -- LOAD W in r2
-		  13=> "1010010100000000", -- DIVIDE r2 from acc and store r2
-		  14=> "0000000100000000", -- send r2 to acc
-		  15=> "1000000000000000", -- substract r1 from acc and store r1
 		  
-		  16=> "1101000000000000", -- send r1 to display
-		  17=> "1111000000000000", -- FIN DEL PROGRAMA
 		  16=> "1101000000000000", -- send r1 to display
 		  17=> "1111000000000000", -- FIN DEL PROGRAMA
 		  -- void
 		  18=> "1111000000000000", -- LOAD Zero in r1
 		  19=> "1111000000000000", -- send r1 to display
-		  18=> "1111000000000000", -- LOAD Zero in r1
-		  19=> "1111000000000000", -- send r1 to display
 		  -- CONSTANTES
-		  20 => "0000000000001101", -- 13
-		  21 => "0000000000010111", -- 23
-		  22 => "0000000000000100", -- 4 
-		  23 => "0000000000000101", -- 5
-		  24 => "0000000000011110", -- 30
-		  25 => "0000000000000010", -- 2
-		  26 => "0000000000000111", -- 7
 		  20 => "0000000000001101", -- 13
 		  21 => "0000000000010111", -- 23
 		  22 => "0000000000000100", -- 4 
@@ -292,27 +225,10 @@ type ROM_MEMORY_array is array(0 to 80) of std_logic_vector(15 downto 0);
 		  28=> "0000000000000010", -- Y = 2
 		  29=> "0000000000001111",  -- W = 15
 		  30=> "0000000000001010", -- Z = 10
-		  27=> "0000000000000011",-- X = 3
-		  28=> "0000000000000010", -- Y = 2
-		  29=> "0000000000001111",  -- W = 15
-		  30=> "0000000000001010", -- Z = 10
 		  --Zero value
-          31=> "0000000000000000", -- Zero
           31=> "0000000000000000", -- Zero
           
           --Programa 2
-          32=> "1011000000011011", -- LOAD X in r1
-          33=> "0000000000000000", -- send r1 to acc
-          34=> "1001000000000000", -- MULTI acc by X=r1 and store r1
-          35=> "1011000100010111", -- LOAD 5 in r2
-          36=> "0000000100000000", -- send r2 to acc
-		  37=>"1001000000000000", -- MULTI acc by X=r1 and store r1
-		  38=> "1011000100011011", -- LOAD X in r2
-		  39=> "0000000100000000", -- send r2 to acc
-		  40=> "1011000100011000", -- LOAD 30 in r2
-		  41=> "1001010100000000", -- MULTI acc by X=r2 and store r2
-		  42=> "0000000100000000", -- send r2 to acc	 
-		  43=> "0111000000000000", -- add acc by r1 and store r1	
           32=> "1011000000011011", -- LOAD X in r1
           33=> "0000000000000000", -- send r1 to acc
           34=> "1001000000000000", -- MULTI acc by X=r1 and store r1
@@ -336,12 +252,7 @@ type ROM_MEMORY_array is array(0 to 80) of std_logic_vector(15 downto 0);
 		  
 		  50=> "1101000000000000", -- send r1 to display
 		  51=> "1111000000000000", -- FIN DEL PROGRAMA
-		  50=> "1101000000000000", -- send r1 to display
-		  51=> "1111000000000000", -- FIN DEL PROGRAMA
 		  --programa 4
-		  52=> "1011000000011111", -- LOAD Zero in r1
-		  53=> "1101000000000000", -- send r1 to display
-		  54=> "1111000000000000", -- FIN DEL PROGRAMA
 		  52=> "1011000000011111", -- LOAD Zero in r1
 		  53=> "1101000000000000", -- send r1 to display
 		  54=> "1111000000000000", -- FIN DEL PROGRAMA
@@ -352,12 +263,6 @@ type ROM_MEMORY_array is array(0 to 80) of std_logic_vector(15 downto 0);
           58=> "1011000100011010", -- LOAD 7 in r2
           59=> "0000000100000000", -- send r2 to acc
 		  60=>"1001000000000000", -- MULTI acc by X=r1 and store r1
-          55=> "1011000000011011", -- LOAD X in r1
-          56=> "0000000000000000", -- send r1 to acc
-          57=> "1001000000000000", -- MULTI acc by X=r1 and store r1
-          58=> "1011000100011010", -- LOAD 7 in r2
-          59=> "0000000100000000", -- send r2 to acc
-		  60=>"1001000000000000", -- MULTI acc by X=r1 and store r1
 		  
 		  61=> "1011000100011110", -- LOAD Z in r2
 		  62=> "0000000100000000", -- send r2 to acc
@@ -366,22 +271,7 @@ type ROM_MEMORY_array is array(0 to 80) of std_logic_vector(15 downto 0);
 		  65=> "0000000100000000", -- send r2 to acc	 
 		  66=> "0111000000000000", --add acc by r1 and store r1
 		  67=> "0010000000000000",-- COMP2 r1 and store r1
-		  61=> "1011000100011110", -- LOAD Z in r2
-		  62=> "0000000100000000", -- send r2 to acc
-		  63=> "1011000100010111", -- LOAD 5 in r2
-		  64=> "1001010100000000", -- MULTI acc by 5=r2 and store r2
-		  65=> "0000000100000000", -- send r2 to acc	 
-		  66=> "0111000000000000", --add acc by r1 and store r1
-		  67=> "0010000000000000",-- COMP2 r1 and store r1
 		  
-		  68=> "1011000100010111", -- LOAD 5 in r2
-		  69=> "0000000100000000", -- send r2 to acc
-		  70=> "1011000100011101", -- LOAD W in r2
-		  71=> "1010010100011001", -- DIVIDE r2 from acc and store r2
-		  72=> "0000000100000000", -- send r2 to acc
-		  73=> "0111000000000000", -- ADD r1 from acc and store r1
-		  74=> "1101000000000000", -- send r1 to display
-		  75=> "1111000000000000", -- FIN DEL PROGRAMA
 		  68=> "1011000100010111", -- LOAD 5 in r2
 		  69=> "0000000100000000", -- send r2 to acc
 		  70=> "1011000100011101", -- LOAD W in r2
@@ -516,20 +406,11 @@ case actual is
     
     --              load specific register            ---
     
-    --             EXECUTE            --
-    
-    --              load specific register            ---
-    
     when load=>
-        mdr:= Content(to_integer(unsigned(mar)));
         mdr:= Content(to_integer(unsigned(mar)));
         sig<=load1;
     when load1=>
         case cir(1 downto 0) is
-        when "00"=>regA:=mdr;
-        when "01"=>regB:=mdr;
-        when "10"=>regC:=mdr;
-        when "11"=>regD:=mdr;
         when "00"=>regA:=mdr;
         when "01"=>regB:=mdr;
         when "10"=>regC:=mdr;
