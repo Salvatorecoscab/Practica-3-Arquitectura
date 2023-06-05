@@ -2,12 +2,12 @@
 # Vivado v2022.2 (64-bit)
 # SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
 # IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
-# Start of session at: Fri Jun  2 13:36:25 2023
-# Process ID: 26408
-# Current directory: Z:/Projects/VivadoProjects/Practica3/project_1.runs/synth_1
+# Start of session at: Mon Jun  5 02:41:49 2023
+# Process ID: 27468
+# Current directory: C:/Users/Salvadorcoscab/Documents/vhdlPracticas/project_1/project_1.runs/synth_1
 # Command line: vivado.exe -log main.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source main.tcl
-# Log file: Z:/Projects/VivadoProjects/Practica3/project_1.runs/synth_1/main.vds
-# Journal file: Z:/Projects/VivadoProjects/Practica3/project_1.runs/synth_1\vivado.jou
-# Running On: LAPTOP-DUV0U3BT, OS: Windows, CPU Frequency: 2496 MHz, CPU Physical cores: 4, Host memory: 25598 MB
+# Log file: C:/Users/Salvadorcoscab/Documents/vhdlPracticas/project_1/project_1.runs/synth_1/main.vds
+# Journal file: C:/Users/Salvadorcoscab/Documents/vhdlPracticas/project_1/project_1.runs/synth_1\vivado.jou
+# Running On: Salvatore, OS: Windows, CPU Frequency: 3693 MHz, CPU Physical cores: 12, Host memory: 17120 MB
 #-----------------------------------------------------------
 source main.tcl -notrace

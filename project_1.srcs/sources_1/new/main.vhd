@@ -67,43 +67,6 @@ begin
     end loop;
     m := pv;
 end procedure multiply;
-procedure div5(
-    numer: in std_logic_vector(9 downto 0);
-    denom: in std_logic_vector(4 downto 0);
-    quotient: out std_logic_vector(4 downto 0);
-    remainder: out std_logic_vector(4 downto 0)
-) is 
-variable d,n1: std_logic_vector(5 downto 0);
-variable n2: std_logic_vector(4 downto 0);
-variable carry: std_logic;
-variable overflow: std_logic;
-begin
-    d:='0'&denom;
-    n2:=numer(4 downto 0);
-    n1:='0'&numer(9 downto 5);
-    for i in 0 to 4 loop
-        n1:=n1(4 downto 0) & n2(4);
-        n2:=n2(3 downto 0) & '0';
-        if n1>=d then
-            add(n1,d,'1',n1,carry, overflow);
-            -- n1:=addF(n1,d,'1')(5 downto 0);
-            n2(0):='1';
-        end if;
-    end loop;
-    quotient:=n2;
-    remainder:=n1(4 downto 0);
-    end procedure; 
-procedure div10(a: in std_logic_vector(9 downto 0);
-                b: in std_logic_vector(4 downto 0);
-                d: out std_logic_vector(9 downto 0)) is
-variable remh,reml, quoth,qoutl: std_logic_vector(4 downto 0);
-begin
-    div5("00000"&a(9 downto 5),b,quoth,remh);
-    div5(remh&a(4 downto 0),b,qoutl,reml);
-    d(9 downto 5):=quoth;
-    d(4 downto 0):=qoutl;
-end procedure;
-
 procedure div8(
     numer: in std_logic_vector(15 downto 0);
     denom: in std_logic_vector(7 downto 0);
@@ -221,7 +184,7 @@ procedure alu ( a: in std_logic_vector(15 downto 0);
         Neg:= Zv(15);
         Z := Zv;
     end procedure alu;
-  
+    
 ------------------Maquina de estadoos-----------------------
 type ROM_MEMORY_array is array(0 to 80) of std_logic_vector(15 downto 0);
     constant Content: ROM_MEMORY_array:=(
@@ -279,7 +242,7 @@ type ROM_MEMORY_array is array(0 to 80) of std_logic_vector(15 downto 0);
 		  42=> "0000000100000000", -- send r2 to acc	 
 		  43=> "0111000000000000", -- add acc by r1 and store r1	
 		  
-		  
+		      
 		  44=> "1011000100011001", -- LOAD 2 in r2
 		  45=> "0000000100000000", -- send r2 to acc
 		  46=> "1011000100011110", -- LOAD Z in r2
@@ -324,58 +287,49 @@ type ROM_MEMORY_array is array(0 to 80) of std_logic_vector(15 downto 0);
 		  
         OTHERS => "0000000000000000"
         );
-type estados is (init, fetch, decode, load,load1,load2, operation,operation1,endprog,send,move,comp,jmp, jalr, bnz, bs, bnc, bnv, ret);
+type estados is (init, fetch, decode, load,load1,load2, operation,operation1,endprog,send,jmp,jalr,comp,bnc,bnz,bnv,move,bs,ret);
 signal actual, sig: estados;
 --------------------Signals----------------------
-signal sal,initialice: std_logic_vector(7 downto 0);
+signal sal: std_logic_vector(15 downto 0);
 signal resaum: std_logic_vector(11 downto 0);
-signal getsal,changed :std_logic;
+signal getsal :std_logic;
 signal seld: std_logic_vector(1 downto 0);
-
+signal initialice: std_logic_vector(7 downto 0);
 begin
 
 clko<=clk;
-------------------Control Unit-------------------
-process (actual ,clk, rst) is
-variable pcvar: std_logic_vector(7 downto 0);
+
+
+
+process (actual,clk, rst) is
+variable pcvar,dato1,dato2: std_logic_vector(15 downto 0);
 variable mdr: std_logic_vector(15 downto 0);
+
 variable res: std_logic_vector(15 downto 0);
-variable pcreg: std_logic_vector(7 downto 0);
-
+variable pcreg,ret_pc: std_logic_vector(7 downto 0);
 variable mar: std_logic_vector(7 downto 0);
+variable resaum: std_logic_vector(11 downto 0);
 variable cir: std_logic_vector(7 downto 0);
-variable nu1,nu2,nu4,nu3: std_logic;
-variable acc,regA,regB,regC,regD,op1,dato1,dato2: std_logic_vector(15 downto 0);
-
-variable ret_pc: std_logic_vector(7 downto 0);
-
-variable carry :  std_logic;
-variable overflow: std_logic;
-variable Zero: std_logic;
-variable Neg: std_logic;
-
-variable gt: std_logic; 
-variable eq: std_logic; 
-variable lt: std_logic;
-
+variable acc,regA,regB,regC,regD,op1: std_logic_vector(15 downto 0);
+variable nu1,nu2,nu3,nu4,eq: std_logic;
 begin
 if rst='1' then
     actual <= init;
-elsif  (clk'event and clk='1') then
+elsif rising_edge (clk) then
 actual<=sig;
 case actual is 
     --              INIT            --
 	when init=>
 	pcreg:=initialice;
     getsal<='0';
-    changed<='0';
 	sig<=fetch;
 	--            FETCH            --
 	when fetch=>
 	mar:=pcreg;
 	mdr:= Content(to_integer(unsigned(pcreg)));
 	cir:= Content(to_integer(unsigned(pcreg)))(15 downto 8);
-	add(pcreg,"00000001",'0',pcreg,nu1,nu2);
+	alu("00000000"&pcreg,"0000000000000001","0111",pcvar,nu1,nu2,nu3,nu4);
+	pcreg:=pcvar(7 downto 0);
 	sig<=decode;
 	
     --              DECODE          --
@@ -425,13 +379,19 @@ case actual is
     when "1010" =>
     mar:=mdr(7 downto 0);
     sig<=operation;
-    -- RETURN
+    -- ret
     when "1100" =>
     mar:=mdr(7 downto 0);
     sig<=ret;
     -- SEND DISP
     when "1101" =>
-    mar:=mdr(7 downto 0);
+    case cir(1 downto 0) is
+        when "00"=>sal<=regA;
+        when "01"=>sal<=regB;
+        when "10"=>sal<=regC;
+        when "11"=>sal<=regD;
+        when others=>sal<=(others=>'0');
+        end case;
     sig<=send;
     -- COMPARADOR
     when "1110"=>
@@ -542,9 +502,10 @@ case actual is
     sig<=fetch;
     --              move            --
     when move=>
-    
+    sig<=fetch;
     --               sendto disp           --
     when send=>
+    
     getsal<='1';
     sig<=fetch;
         
@@ -554,58 +515,44 @@ case actual is
     else 
     sig<=init;
     end if;         
-	when others=>sig<=init; 	
+	when others=>sig<=init;
+	 	
 end case;
+  
+    
 end if;
 
 end process;
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
 
 
 initialicepc: process (sel,clk) is begin
-if(clk'event and clk='1') then
-case sel is
-    when "00"=>initialice<="00000000";
-    --change<='1';
-    when "01"=>initialice<="00100000";
-    --change<='1';
-    when "10"=>initialice<="00110111";
-    --change<='1';
-    when "11"=>initialice<="00110100";
-    --change<='1';
-    when others=>null;
-    end case;
+    if(clk'event and clk='1') then
+    case sel is
+        when "00"=>initialice<="00000000";
+        when "01"=>initialice<="00100000";
+        when "10"=>initialice<="00110111";
+        when "11"=>initialice<="00110100";
+        when others=>null;
+        end case;
+        
+        seld<=sel;
+        end if;
+        
+    end process;
     
-    seld<=sel;
+    process (clk) is begin
+    if(clk'event and clk='1') then 
+    if(getsal='1') then
+    resaum<=sal(11 downto 0);
+    else
+    resaum<=(others=>'0');
     end if;
+    end if;
+    end process;
     
-end process;
---changed <= '0' when seld = sel else '1';
-
-process (clk) is begin
-if(clk'event and clk='1') then 
-if(getsal='1') then
-resaum<="0000"&sal;
-else
-resaum<=(others=>'0');
-end if;
-end if;
-end process;
-
-
-dispacccon: bintodisp port map(clk=>clk,rst=>'0',segment=>segment,display=>display,resaum=>resaum);
-end architecture;
+    
+    dispacccon: bintodisp port map(clk=>clk,rst=>'0',segment=>segment,display=>display,resaum=>resaum);
+    end architecture;

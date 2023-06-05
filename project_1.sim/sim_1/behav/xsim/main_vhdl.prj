@@ -1,0 +1,9 @@
+# compile vhdl design source files
+vhdl xil_defaultlib  \
+"../../../../project_1.srcs/sources_1/imports/components/BinaryTo7Segments.vhd" \
+"../../../../project_1.srcs/sources_1/imports/components/binBCD.vhd" \
+"../../../../project_1.srcs/sources_1/imports/components/bintodisp.vhd" \
+"../../../../project_1.srcs/sources_1/new/main.vhd" \
+
+# Do not sort compile order
+nosort
