@@ -2,8 +2,12 @@
 2020.2
 Oct 14 2022
 05:20:55
+<<<<<<< HEAD
 C:/Users/Salvadorcoscab/Documents/vhdlPracticas/project_1/project_1.srcs/sources_1/imports/components/BinaryTo7Segments.vhd,1682661400,vhdl,,,,binaryto7segments,,,,,,,,
 C:/Users/Salvadorcoscab/Documents/vhdlPracticas/project_1/project_1.srcs/sources_1/imports/components/binBCD.vhd,1682661399,vhdl,,,,binbcd,,,,,,,,
 C:/Users/Salvadorcoscab/Documents/vhdlPracticas/project_1/project_1.srcs/sources_1/imports/components/bintodisp.vhd,1682661398,vhdl,,,,bintodisp,,,,,,,,
 C:/Users/Salvadorcoscab/Documents/vhdlPracticas/project_1/project_1.srcs/sources_1/new/aluP.vhd,1685926639,vhdl,,,,alup,,,,,,,,
 C:/Users/Salvadorcoscab/Documents/vhdlPracticas/project_1/project_1.srcs/sources_1/new/main.vhd,1685953023,vhdl,,,,main,,,,,,,,
+=======
+C:/Users/Salvadorcoscab/Documents/vhdlPracticas/project_1/project_1.srcs/sources_1/new/aluP.vhd,1685602860,vhdl,,,,alup,,,,,,,,
+>>>>>>> f1ae9ff44921bf98f78904049001c8f4cba66535

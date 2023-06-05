@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 Running: xsim.dir/aluP_behav/xsimk.exe -simmode gui -wdb aluP_behav.wdb -simrunnum 0 -socket 57927
+=======
+Running: xsim.dir/aluP_behav/xsimk.exe -simmode gui -wdb aluP_behav.wdb -simrunnum 0 -socket 57062
+>>>>>>> f1ae9ff44921bf98f78904049001c8f4cba66535
 Design successfully loaded
 Design Loading Memory Usage: 7812 KB (Peak: 7812 KB)
 Design Loading CPU Usage: 0 ms
+<<<<<<< HEAD
 Simulation completed
 Simulation Memory Usage: 8324 KB (Peak: 8324 KB)
 Simulation CPU Usage: 0 ms
+=======
+>>>>>>> f1ae9ff44921bf98f78904049001c8f4cba66535

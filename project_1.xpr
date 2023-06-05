@@ -90,6 +90,7 @@
       <Filter Type="Srcs"/>
       <File Path="$PSRCDIR/sources_1/imports/components/BinaryTo7Segments.vhd">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../p2/components/BinaryTo7Segments.vhd"/>
           <Attr Name="ImportTime" Val="1682661400"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -98,6 +99,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/components/binBCD.vhd">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../p2/components/binBCD.vhd"/>
           <Attr Name="ImportTime" Val="1682661399"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -106,6 +108,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/components/bintodisp.vhd">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../p2/components/bintodisp.vhd"/>
           <Attr Name="ImportTime" Val="1682661398"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -114,6 +117,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/new/main.vhd">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>

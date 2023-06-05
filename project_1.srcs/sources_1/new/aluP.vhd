@@ -70,7 +70,6 @@ begin
     overflow:= carryv xor sum(a'length-1);
     
 end procedure add;
-
 procedure multiply(
     a : in std_logic_vector; 
     b : in std_logic_vector;
@@ -90,7 +89,42 @@ begin
     end loop;
     m := pv;
 end procedure multiply;
-
+procedure div5(
+    numer: in std_logic_vector(9 downto 0);
+    denom: in std_logic_vector(4 downto 0);
+    quotient: out std_logic_vector(4 downto 0);
+    remainder: out std_logic_vector(4 downto 0)
+) is 
+variable d,n1: std_logic_vector(5 downto 0);
+variable n2: std_logic_vector(4 downto 0);
+variable carry: std_logic;
+variable overflow: std_logic;
+begin
+    d:='0'&denom;
+    n2:=numer(4 downto 0);
+    n1:='0'&numer(9 downto 5);
+    for i in 0 to 4 loop
+        n1:=n1(4 downto 0) & n2(4);
+        n2:=n2(3 downto 0) & '0';
+        if n1>=d then
+            add(n1,d,'1',n1,carry, overflow);
+            -- n1:=addF(n1,d,'1')(5 downto 0);
+            n2(0):='1';
+        end if;
+    end loop;
+    quotient:=n2;
+    remainder:=n1(4 downto 0);
+    end procedure; 
+procedure div10(a: in std_logic_vector(9 downto 0);
+                b: in std_logic_vector(4 downto 0);
+                d: out std_logic_vector(9 downto 0)) is
+variable remh,reml, quoth,qoutl: std_logic_vector(4 downto 0);
+begin
+    div5("00000"&a(9 downto 5),b,quoth,remh);
+    div5(remh&a(4 downto 0),b,qoutl,reml);
+    d(9 downto 5):=quoth;
+    d(4 downto 0):=qoutl;
+end procedure;
 
 procedure div8(
     numer: in std_logic_vector(15 downto 0);
@@ -98,39 +132,42 @@ procedure div8(
     quotient: out std_logic_vector(7 downto 0);
     remainder: out std_logic_vector(7 downto 0)
 ) is 
-variable d,n1: std_logic_vector(8 downto 0);
+variable d, n1: std_logic_vector(8 downto 0);
 variable n2: std_logic_vector(7 downto 0);
-variable carry,ov: std_logic;
+variable carry: std_logic;
+variable overflow: std_logic;
 begin
-    d:='0'&denom;
-    n2:=numer(7 downto 0);
-    n1:='0'&numer(15 downto 8);
-    for i in 0 to 15 loop
-        n1:=n1(7 downto 0) & n2(7);
-        n2:=n2(6 downto 0) & '0';
-        if n1>=d then
-            add(n1,d,'1',n1, ov,carry);
-            n1:=n1(8 downto 0);
-            n2(0):='1';
+    d := '0' & denom;
+    n2 := numer(7 downto 0);
+    n1 := '0' & numer(15 downto 8);
+    
+    for i in 0 to 7 loop
+        n1 := n1(7 downto 0) & n2(7);
+        n2 := n2(6 downto 0) & '0';
+        
+        if n1 >= d then
+            add(n1, d, '1', n1, carry, overflow);
+            n2(0) := '1';
         end if;
     end loop;
-    quotient:=n2;
-    remainder:=n1(7 downto 0);
-    end procedure;
-
-
-
-procedure div10(a: in std_logic_vector(15 downto 0);
-                b: in std_logic_vector(7 downto 0);
-                d: out std_logic_vector(15 downto 0)) is
-variable remh,reml, quoth,qoutl: std_logic_vector(7 downto 0);
-begin
-    div8("00000000"&a(15 downto 8),b,quoth,remh);
-    div8(remh&a(7 downto 0),b,qoutl,reml);
-    d(15 downto 8):=quoth;
-    d(7 downto 0):=qoutl;
-   
+    
+    quotient := n2;
+    remainder := n1(7 downto 0);
 end procedure;
+
+procedure div16(
+    a: in std_logic_vector(15 downto 0);
+    b: in std_logic_vector(7 downto 0);
+    d: out std_logic_vector(15 downto 0)
+) is
+variable remh, reml, quoth, qoutl: std_logic_vector(7 downto 0);
+begin
+    div8("00000000" & a(15 downto 8), b, quoth, remh);
+    div8(remh & a(7 downto 0), b, qoutl, reml);
+    d(15 downto 8) := quoth;
+    d(7 downto 0) := qoutl;
+end procedure;
+
 procedure comp1 (
     x: in std_logic;
     y: in std_logic;
@@ -178,23 +215,34 @@ procedure alu ( a: in std_logic_vector(15 downto 0);
                 overflow: out std_logic;
                 Zero: out std_logic; 
                 Neg: out std_logic) is
-    
+    variable zfv: std_logic;
+    variable Zv: std_logic_vector(15 downto 0);
     begin
+        carry:='0';
+        overflow:='0';
+        zfv:='0';
         case F is
-            when "0001" => Z := not a;
-            when "0010" => add("0000000000000000",a,'1',Z,overflow,carry);-- complemento a 2
-            when "0011" => Z := a and b;
-            when "0100" => Z := a or b;
-            when "0101" => Z := a(14 downto 0) & '0';
-            when "0110" => Z := a(a'length-1)&a(a'length-1 downto 1);
-            when "0111" => add(a,b,'0',Z,overflow,carry);--suma
-            when "1000" => add(a,b,'1',Z,overflow,carry);--resta
+            when "0001" => Zv := not a;
+            when "0010" => add("0000000000000000",a,'1',Zv,overflow,carry);-- complemento a 2
+            when "0011" => Zv := a and b;
+            when "0100" => Zv := a or b;
+            when "0101" => Zv := a(14 downto 0) & '0';
+            when "0110" => Zv := a(a'length-1)&a(a'length-1 downto 1);
+            when "0111" => add(a,b,'0',Zv,overflow,carry);--suma
+            when "1000" => add(a,b,'1',Zv,overflow,carry);--resta
        
-            when "1001" => multiply(a(7 downto 0), b(7 downto 0),Z);--multiplicacion 8 bits
-            when "1010" => div10(a,b(7 downto 0),Z); --division 16/8 bits
+            when "1001" => multiply(a(7 downto 0), b(7 downto 0),Zv);--multiplicacion 8 bits
+            when "1010" => 
+            div16(a,b(7 downto 0),Zv); --division 16/8 bits
          
-            when others => Z := (others=>'0');
+            when others => Zv := (others=>'0');
         end case;
+        for i in 0 to 15 loop
+            zfv:= zfv or Zv(i);
+        end loop;
+        Zero:= not zfv;
+        Neg:= Zv(15);
+        Z := Zv;
     end procedure alu;
     
 begin
@@ -211,3 +259,4 @@ begin
     end process;
 end Behavioral;
 
+  

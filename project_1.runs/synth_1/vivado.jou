@@ -2,8 +2,13 @@
 # Vivado v2022.2 (64-bit)
 # SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
 # IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+<<<<<<< HEAD
 # Start of session at: Mon Jun  5 02:41:49 2023
 # Process ID: 27468
+=======
+# Start of session at: Wed May 31 22:45:19 2023
+# Process ID: 16108
+>>>>>>> f1ae9ff44921bf98f78904049001c8f4cba66535
 # Current directory: C:/Users/Salvadorcoscab/Documents/vhdlPracticas/project_1/project_1.runs/synth_1
 # Command line: vivado.exe -log main.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source main.tcl
 # Log file: C:/Users/Salvadorcoscab/Documents/vhdlPracticas/project_1/project_1.runs/synth_1/main.vds
