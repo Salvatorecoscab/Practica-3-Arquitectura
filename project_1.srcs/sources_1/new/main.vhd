@@ -194,7 +194,7 @@ procedure alu ( a: in std_logic_vector(15 downto 0);
     end procedure alu;
     
 ------------------Maquina de estadoos-----------------------
-type ROM_MEMORY_array is array(0 to 80) of std_logic_vector(15 downto 0);
+type ROM_MEMORY_array is array(0 to 85) of std_logic_vector(15 downto 0);
     constant Content: ROM_MEMORY_array:=(
            --programa 1
           0=> "1011000000010100", -- LOAD 13 in r1
@@ -237,10 +237,10 @@ type ROM_MEMORY_array is array(0 to 80) of std_logic_vector(15 downto 0);
           31=> "0000000000000000", -- Zero
           
           --Programa 2
-          32=> "0111111111111111", -- 0
-          33=> "0000000000000001", -- Valor de 1
+          32=> "0000000000001111", -- Numerote
+          33=> "0000000000000001", -- Valor de 
+          34=> "0000000000000000", -- 0
           
-          34=> "1001000000000000", -- MULTI acc by X=r1 and store r1
           35=> "1011000100010111", -- LOAD 5 in r2
           36=> "0000000100000000", -- send r2 to acc
 		  37=>"1001000000000000", -- MULTI acc by X=r1 and store r1
@@ -291,22 +291,22 @@ type ROM_MEMORY_array is array(0 to 80) of std_logic_vector(15 downto 0);
 		  71=> "0000000100000000", -- send r2 to acc
 		  72=> "0111000000000000", -- ADD r1 from acc and store r1
 		  73=> "1011001000100000", -- LOAD DIRECCION MEMORIA 32 in r3
-
 		  74=> "1101000000000000", -- send r1 to display
+		  
 		  75=> "1011001100100001", -- LOAD DIRECCION MEMORIA 33 in r4
 		  76=> "0000001100000000", -- send r4 to acc
 		  77=> "1000101000000000", -- SUBTRACR R3 - acc and store in r3
+		  --78=> "1000101000000000", -- SUBTRACR R3 - acc and store in 
+		  78=> "1101000000000000", -- send r1 to display
+		  79=> "0011100001001011", -- BNZ regC
+		  --79=> "0011100001001011", -- BNZ regC
 		  
-		  78=> "0011100001001010", -- BNZ regC
-		  79=> "0011100001001010", -- BNZ regC
-		  
-		  --79=> "1101000000000000", -- send r1 to display
-		  
-		  80=> "1111000000000000", -- FIN DEL PROGRAMA
+		  80=> "1011000100100010", -- LOAD DIRECCION MEMORIA 34 in r1
+		  81=> "1101000000000000", -- send r1 to display
+		  82=> "1111000000000000", -- FIN DEL PROGRAMA
         OTHERS => "0000000000000000"
         );
-type estados is (init, fetch, decode, load,load1,load2, operation,operation1,endprog,send,jmp,jalr,comp,bnc,bnz,bnv,move,bs,ret, bnz2);
-signal actual, sig: estados;
+
 --------------------Signals----------------------
 signal sal: std_logic_vector(15 downto 0);
 signal resaum: std_logic_vector(11 downto 0);
@@ -347,7 +347,10 @@ end process;
 
 
 
-process (actual,clk, rst) is
+process (clk, rst) is
+type estados is (init, fetch, decode, load,load1,load2, operation,operation1,endprog,send,jmp,jalr,comp,bnc,bnz,bnv,move,bs,ret, bnz2);
+variable actual, sig: estados;
+
 variable pcvar,dato1,dato2: std_logic_vector(15 downto 0);
 variable mdr: std_logic_vector(15 downto 0);
 
@@ -356,7 +359,7 @@ variable pcreg,ret_pc: std_logic_vector(7 downto 0);
 variable mar: std_logic_vector(7 downto 0);
 variable resaum: std_logic_vector(11 downto 0);
 variable cir: std_logic_vector(7 downto 0);
-variable acc,regA,regB,regC,regD,op1: std_logic_vector(15 downto 0);
+variable acc,regA,regB,regC,regD,op1: std_logic_vector(15 downto 0):= "0000000000000000";
 variable nu1,nu2,nu3,nu4,eq,gt,lt: std_logic;
 variable carry :  std_logic;
 variable overflow: std_logic;
@@ -365,15 +368,15 @@ variable Neg: std_logic;
 
 begin
 if rst='1' then
-    actual <= init;
+    actual := init;
 elsif rising_edge (clk) then
-actual<=sig;
+actual:=sig;
 case actual is 
      --              INIT            --
 	when init=>
 	pcreg:=initialice;
     getsal<='0';
-	sig<=fetch;
+	sig:=fetch;
 	--            FETCH            --
 	when fetch=>
 	mar:=pcreg;
@@ -381,7 +384,7 @@ case actual is
 	cir:= Content(to_integer(unsigned(pcreg)))(15 downto 8);
 	alu("00000000"&pcreg,"0000000000000001","0111",pcvar,nu1,nu2,nu3,nu4); -- Aqui se suma el pcreg
 	pcreg:=pcvar(7 downto 0);
-	sig<=decode;
+	sig:=decode;
 	
     --              DECODE          --
     when decode=>
@@ -395,47 +398,47 @@ case actual is
         when "11"=>acc:=regD;
         when others=>acc:=(others=>'0');
         end case;
-    sig<=fetch;
+    sig:=fetch;
     -- Nuevas Intrucciones --
     when "0001" =>
-    sig<=jmp;
+    sig:=jmp;
     when "0010" =>
-    sig<=jalr;
+    sig:=jalr;
     
     when "0011" =>
-    sig<=bnz;
+    sig:=bnz;
    
     when "0100" =>
-    sig<=bs;
+    sig:=bs;
     when "0101" =>
-    sig<=bnc;
+    sig:=bnc;
     when "0110" =>
-    sig<=bnv;
+    sig:=bnv;
     --     FIN   --
     -- ADD
     when "0111" =>
     mar:=mdr(7 downto 0);
-    sig<=operation;
+    sig:=operation;
     -- SUBTRACT
     when "1000" =>
     mar:=mdr(7 downto 0);
-    sig<=operation;
+    sig:=operation;
     -- MULTI
     when "1001" =>
     mar:=mdr(7 downto 0);
-    sig<=operation;
+    sig:=operation;
     -- LOAD
     when "1011" =>
     mar:=mdr(7 downto 0);
-    sig<=load;
+    sig:=load;
     -- DIVIDE
     when "1010" =>
     mar:=mdr(7 downto 0);
-    sig<=operation;
+    sig:=operation;
     -- ret
     when "1100" =>
     mar:=mdr(7 downto 0);
-    sig<=ret;
+    sig:=ret;
     -- SEND DISP
     when "1101" =>
     case cir(1 downto 0) is
@@ -445,14 +448,14 @@ case actual is
         when "11"=>sal<=regD;
         when others=>sal<=(others=>'0');
         end case;
-    sig<=send;
+    sig:=send;
     -- COMPARADOR
     when "1110"=>
-    sig<=comp;
+    sig:=comp;
     --fin del programa
     when "1111" =>
-    sig<=endprog;
-    when others=>sig<=init;
+    sig:=endprog;
+    when others=>sig:=init;
     end case;
     
     --             EXECUTE            --
@@ -461,16 +464,16 @@ case actual is
     
     when load=>
         mdr:= Content(to_integer(unsigned(mar)));
-        sig<=load1;
+        sig:=load1;
     when load1=>
         case cir(1 downto 0) is
         when "00"=>regA:=mdr;
         when "01"=>regB:=mdr;
         when "10"=>regC:=mdr;
         when "11"=>regD:=mdr;
-        when others=>sig<=init;
+        when others=>sig:=init;
         end case;
-    sig<=fetch;
+    sig:=fetch;
     
   
     --                operation             --
@@ -482,25 +485,25 @@ case actual is
         when "01"=>op1:=regB;
         when "10"=>op1:=regC;
         when "11"=>op1:=regD;
-        when others=>sig<=init;
+        when others=>sig:=init;
         end case;
-        sig<=operation1;
+        sig:=operation1;
     when operation1=>
         alu(op1,acc,cir(7 downto 4),res,carry,overflow,zero,Neg);
         mdr:=res;
-        sig<=load1;
+        sig:=load1;
 
 
    --             saltos            --
   --          JUMP            --
     when jmp=>
         pcreg:=mdr(7 downto 0); 
-        sig<=fetch;
+        sig:=fetch;
     --          JALR           
     when jalr=>
          ret_pc:=pcreg;
          pcreg:=mdr(7 downto 0);
-    sig<=fetch;
+    sig:=fetch;
     when ret=>
         pcreg:= ret_pc;
         ret_pc:="00000000";
@@ -522,16 +525,15 @@ case actual is
     -- comparer(dato1,dato2,enable_cmp,gt,eq,lt);
     -- enable_cmp := '0';
     -- equal <= eq;
-    sig<=bnz2;
-    
+    sig:=bnz2;
     when bnz2 =>
-    
     if(eq_cmp = '1') then 
-        sig<=fetch;
+        sig:=fetch;
     else
         pcreg:=mdr(7 downto 0); 
-        sig<=bnz;
+        sig:=fetch;
     end if;
+    enable_cmp <= '0';
     
     --          BS            -- Compara registro especifico
     when bs=>
@@ -545,56 +547,56 @@ case actual is
     if(dato2(15) = '1') then 
         pcreg:=mdr(7 downto 0); 
     end if;
-    sig<=fetch;
+    sig:=fetch;
      --          BNC            --  Compara la operacion de add anterior si hubo carry
     when bnc=>
     if(carry = '1') then 
         pcreg:=mdr(7 downto 0); 
         carry := '0';
     end if;
-    sig<=fetch;
+    sig:=fetch;
       --          BNV            -- Compara la operacion add anterior si hubo overflow
     when bnv=>
     if(overflow = '1') then 
         pcreg:=mdr(7 downto 0); 
         overflow := '0';
     end if;
-    sig<=fetch;
+    sig:=fetch;
     when comp=>
     case cir(1 downto 0) is
         when "00"=>dato1:=regA;
         when "01"=>dato1:=regB;
         when "10"=>dato1:=regC;
         when "11"=>dato1:=regD;
-        when others=>sig<=init;
+        when others=>sig:=init;
         end case;
     case cir(3 downto 2) is
         when "00"=>dato2:=regA;
         when "01"=>dato2:=regB;
         when "10"=>dato2:=regC;
         when "11"=>dato2:=regD;
-        when others=>sig<=init;
+        when others=>sig:=init;
         end case;
     -- enable_cmp := '1';
     -- comparer(dato1,dato2,enable_cmp,gt,eq,lt);
     -- enable_cmp := '0';
-    sig<=fetch;
+    sig:=fetch;
     --              move            --
     when move=>
-    sig<=fetch;
+    sig:=fetch;
     --               sendto disp           --
     when send=>
     
     getsal<='1';
-    sig<=fetch;
+    sig:=fetch;
         
     when endprog=>
     if(sel=seld) then
-    sig<=endprog;
+    sig:=endprog;
     else 
-    sig<=init;
+    sig:=init;
     end if;         
-	when others=>sig<=init;
+	when others=>sig:=init;
 	 	
 end case;
   rg1<=regA;  

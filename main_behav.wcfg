@@ -10,15 +10,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="20,010,500 ps"></ZoomStartTime>
-      <ZoomEndTime time="20,010,507 ps"></ZoomEndTime>
-      <Cursor1Time time="20,999,996 ps"></Cursor1Time>
+      <ZoomStartTime time="290,997,091 ps"></ZoomStartTime>
+      <ZoomEndTime time="290,997,101 ps"></ZoomEndTime>
+      <Cursor1Time time="110,998,891 ps"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="217"></NameColumnWidth>
-      <ValueColumnWidth column_width="120"></ValueColumnWidth>
+      <ValueColumnWidth column_width="116"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="20" />
+   <WVObjectSize size="26" />
    <wvobject fp_name="/main/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -82,6 +82,7 @@
    <wvobject fp_name="/main/rg3" type="array">
       <obj_property name="ElementShortName">rg3[15:0]</obj_property>
       <obj_property name="ObjectShortName">rg3[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/main/rg4" type="array">
       <obj_property name="ElementShortName">rg4[15:0]</obj_property>
@@ -99,5 +100,29 @@
    <wvobject fp_name="/main/Content" type="array">
       <obj_property name="ElementShortName">Content[0:80][15:0]</obj_property>
       <obj_property name="ObjectShortName">Content[0:80][15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/dato_cmp_1" type="array">
+      <obj_property name="ElementShortName">dato_cmp_1[15:0]</obj_property>
+      <obj_property name="ObjectShortName">dato_cmp_1[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/dato_cmp_2" type="array">
+      <obj_property name="ElementShortName">dato_cmp_2[15:0]</obj_property>
+      <obj_property name="ObjectShortName">dato_cmp_2[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/eq_cmp" type="logic">
+      <obj_property name="ElementShortName">eq_cmp</obj_property>
+      <obj_property name="ObjectShortName">eq_cmp</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/lt_cmp" type="logic">
+      <obj_property name="ElementShortName">lt_cmp</obj_property>
+      <obj_property name="ObjectShortName">lt_cmp</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/gt_cmp" type="logic">
+      <obj_property name="ElementShortName">gt_cmp</obj_property>
+      <obj_property name="ObjectShortName">gt_cmp</obj_property>
+   </wvobject>
+   <wvobject fp_name="/main/enable_cmp" type="logic">
+      <obj_property name="ElementShortName">enable_cmp</obj_property>
+      <obj_property name="ObjectShortName">enable_cmp</obj_property>
    </wvobject>
 </wave_config>
