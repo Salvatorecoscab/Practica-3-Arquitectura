@@ -3,12 +3,11 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 entity main is 
 port(
-    clk : in std_logic;
+    clkf : in std_logic;
     rst : in std_logic;
     segment : out  STD_LOGIC_VECTOR (6 downto 0);
     display : out  STD_LOGIC_VECTOR (3 downto 0);
     --leds : out  STD_LOGIC_VECTOR (9 downto 0);
-    clko:out std_logic;
     sel : in std_logic_vector(1 downto 0)
 );
 end entity;
@@ -237,7 +236,7 @@ type ROM_MEMORY_array is array(0 to 85) of std_logic_vector(15 downto 0);
           31=> "0000000000000000", -- Zero
           
           --Programa 2
-          32=> "0000000000001111", -- Numerote
+          32=> "0111111111111111", -- Numerote
           33=> "0000000000000001", -- Valor de 
           34=> "0000000000000000", -- 0
           
@@ -321,9 +320,12 @@ signal dato_cmp_1: std_logic_vector(15 downto 0);
 signal dato_cmp_2: std_logic_vector(15 downto 0);
 signal eq_cmp, lt_cmp, gt_cmp, enable_cmp: std_logic;
 
+ constant division_ratio: integer := 3333;
+ signal counter: integer range 0 to division_ratio:=0;
+signal clk: std_logic;
+
 begin
 
-clko<=clk;
 
 process (dato_cmp_1,dato_cmp_2) is
     variable g,l,e: std_logic_vector(dato_cmp_1'length downto 0);
@@ -344,10 +346,22 @@ begin
     end if;
 end process;
 
+process(clkf, rst)
+    begin
+        if rst = '1' then
+            counter <= 0;
+            clk <= '0';
+        elsif rising_edge(clkf) then
+            if counter = division_ratio then
+                counter <= 0;
+                clk <= not clk;
+            else
+                counter <= counter + 1;
+            end if;
+        end if;
+    end process;
 
-
-
-process (clk, rst) is
+process (clkf, rst) is
 type estados is (init, fetch, decode, load,load1,load2, operation,operation1,endprog,send,jmp,jalr,comp,bnc,bnz,bnv,move,bs,ret, bnz2);
 variable actual, sig: estados;
 
@@ -370,7 +384,8 @@ begin
 if rst='1' then
     actual := init;
 elsif rising_edge (clk) then
-actual:=sig;
+    
+                actual:=sig;
 case actual is 
      --              INIT            --
 	when init=>
@@ -593,6 +608,7 @@ case actual is
     when endprog=>
     if(sel=seld) then
     sig:=endprog;
+    getsal <= '0';
     else 
     sig:=init;
     end if;         
@@ -605,6 +621,8 @@ end case;
   rg4<=regD;  
   pcsig<=pcreg;
   equal<=eq;
+               -- clk_30khz <= not clk_30khz;
+   
 end if;
 
 end process;
@@ -613,8 +631,8 @@ end process;
 
 
 
-initialicepc: process (sel,clk) is begin
-    if(clk'event and clk='1') then
+initialicepc: process (sel,clkf) is begin
+    if(clkf'event and clkf='1') then
     case sel is
         when "00"=>initialice<="00000000";
         when "01"=>initialice<="00100000";
@@ -628,8 +646,8 @@ initialicepc: process (sel,clk) is begin
         
     end process;
     
-    process (clk) is begin
-    if(clk'event and clk='1') then 
+    process (clkf) is begin
+    if(clkf'event and clkf='1') then 
     if(getsal='1') then
     resaum<=sal(11 downto 0);
     else
@@ -639,5 +657,5 @@ initialicepc: process (sel,clk) is begin
     end process;
     
     
-    dispacccon: bintodisp port map(clk=>clk,rst=>'0',segment=>segment,display=>display,resaum=>resaum);
+    dispacccon: bintodisp port map(clk=>clkf,rst=>'0',segment=>segment,display=>display,resaum=>resaum);
     end architecture;

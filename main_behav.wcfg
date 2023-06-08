@@ -10,15 +10,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="290,997,091 ps"></ZoomStartTime>
-      <ZoomEndTime time="290,997,101 ps"></ZoomEndTime>
-      <Cursor1Time time="110,998,891 ps"></Cursor1Time>
+      <ZoomStartTime time="170,999,941 ps"></ZoomStartTime>
+      <ZoomEndTime time="171,000,021 ps"></ZoomEndTime>
+      <Cursor1Time time="171,000,000 ps"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="217"></NameColumnWidth>
-      <ValueColumnWidth column_width="116"></ValueColumnWidth>
+      <ValueColumnWidth column_width="112"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="26" />
+   <WVObjectSize size="24" />
    <wvobject fp_name="/main/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -42,14 +42,6 @@
    <wvobject fp_name="/main/sel" type="array">
       <obj_property name="ElementShortName">sel[1:0]</obj_property>
       <obj_property name="ObjectShortName">sel[1:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/main/actual" type="other">
-      <obj_property name="ElementShortName">actual</obj_property>
-      <obj_property name="ObjectShortName">actual</obj_property>
-   </wvobject>
-   <wvobject fp_name="/main/sig" type="other">
-      <obj_property name="ElementShortName">sig</obj_property>
-      <obj_property name="ObjectShortName">sig</obj_property>
    </wvobject>
    <wvobject fp_name="/main/sal" type="array">
       <obj_property name="ElementShortName">sal[15:0]</obj_property>
@@ -98,8 +90,8 @@
       <obj_property name="ObjectShortName">equal</obj_property>
    </wvobject>
    <wvobject fp_name="/main/Content" type="array">
-      <obj_property name="ElementShortName">Content[0:80][15:0]</obj_property>
-      <obj_property name="ObjectShortName">Content[0:80][15:0]</obj_property>
+      <obj_property name="ElementShortName">Content[0:85][15:0]</obj_property>
+      <obj_property name="ObjectShortName">Content[0:85][15:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/main/dato_cmp_1" type="array">
       <obj_property name="ElementShortName">dato_cmp_1[15:0]</obj_property>
