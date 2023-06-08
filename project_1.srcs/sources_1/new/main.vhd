@@ -110,8 +110,8 @@ begin
 end procedure;
 
 procedure comp1 (
-    variable x: in std_logic;
-    variable y: in std_logic;
+    x: in std_logic;
+    y: in std_logic;
     variable gin: in std_logic;
     variable lin: in std_logic;
     variable gout: out std_logic;
@@ -129,6 +129,7 @@ end procedure;
 procedure comparer (
     variable a : in std_logic_vector;
     variable b : in std_logic_vector;
+    variable enable: in std_logic;
     variable gt : out std_logic;
     variable eq : out std_logic;
     variable lt : out std_logic
@@ -136,7 +137,7 @@ procedure comparer (
     variable g,l,e: std_logic_vector(a'length downto 0);
 
 begin
- if(True)then
+ if(enable = '1')then
     g(0):='0';
     l(0):='0';
     for i in 0 to a'length-1 loop
@@ -297,8 +298,11 @@ type ROM_MEMORY_array is array(0 to 80) of std_logic_vector(15 downto 0);
 		  77=> "1000101000000000", -- SUBTRACR R3 - acc and store in r3
 		  
 		  78=> "0011100001001010", -- BNZ regC
+		  79=> "0011100001001010", -- BNZ regC
 		  
-		  79=> "1111000000000000", -- FIN DEL PROGRAMA
+		  --79=> "1101000000000000", -- send r1 to display
+		  
+		  80=> "1111000000000000", -- FIN DEL PROGRAMA
         OTHERS => "0000000000000000"
         );
 type estados is (init, fetch, decode, load,load1,load2, operation,operation1,endprog,send,jmp,jalr,comp,bnc,bnz,bnv,move,bs,ret, bnz2);
@@ -312,9 +316,34 @@ signal initialice: std_logic_vector(7 downto 0);
 signal rg1,rg2,rg3,rg4: std_logic_vector(15 downto 0);
 signal pcsig: std_logic_vector(7 downto 0);
 signal equal : std_logic;
+
+signal dato_cmp_1: std_logic_vector(15 downto 0);
+signal dato_cmp_2: std_logic_vector(15 downto 0);
+signal eq_cmp, lt_cmp, gt_cmp, enable_cmp: std_logic;
+
 begin
 
 clko<=clk;
+
+process (dato_cmp_1,dato_cmp_2) is
+    variable g,l,e: std_logic_vector(dato_cmp_1'length downto 0);
+begin
+ if(enable_cmp = '1')then
+    g(0):='0';
+    l(0):='0';
+    for i in 0 to 15 loop
+        comp1(dato_cmp_1(i),dato_cmp_2(i),g(i),l(i),g(i+1),l(i+1),e(i+1));
+    end loop;
+    eq_cmp<=e(15);
+    gt_cmp<=g(15);
+    lt_cmp<=l(15);
+    else
+    eq_cmp<='0';
+    gt_cmp<='0';
+    lt_cmp<='0';
+    end if;
+end process;
+
 
 
 
@@ -375,7 +404,7 @@ case actual is
     
     when "0011" =>
     sig<=bnz;
-    
+   
     when "0100" =>
     sig<=bs;
     when "0101" =>
@@ -486,18 +515,22 @@ case actual is
         when "11"=>dato2:=regD;
         when others=>dato2:=regA;
     end case;
-   
-    comparer(dato1,dato2, gt,eq,lt);
-    equal <= eq;
+    enable_cmp <= '1';
+    dato_cmp_1 <= dato1;
+    dato_cmp_2 <= dato2;
+    -- enable_cmp := '1';
+    -- comparer(dato1,dato2,enable_cmp,gt,eq,lt);
+    -- enable_cmp := '0';
+    -- equal <= eq;
     sig<=bnz2;
     
     when bnz2 =>
     
-    if(eq = '1') then 
+    if(eq_cmp = '1') then 
         sig<=fetch;
     else
         pcreg:=mdr(7 downto 0); 
-        sig<=fetch;
+        sig<=bnz;
     end if;
     
     --          BS            -- Compara registro especifico
@@ -542,7 +575,9 @@ case actual is
         when "11"=>dato2:=regD;
         when others=>sig<=init;
         end case;
-    comparer(dato1,dato2,gt,eq,lt);
+    -- enable_cmp := '1';
+    -- comparer(dato1,dato2,enable_cmp,gt,eq,lt);
+    -- enable_cmp := '0';
     sig<=fetch;
     --              move            --
     when move=>
