@@ -236,7 +236,8 @@ type ROM_MEMORY_array is array(0 to 85) of std_logic_vector(15 downto 0);
           31=> "0000000000000000", -- Zero
           
           --Programa 2
-          32=> "0111111111111111", -- Numerote
+          --32=> "0000000000000011", -- Numerote
+          32=> "1000000000000001", -- Numerote menmos
           33=> "0000000000000001", -- Valor de 
           34=> "0000000000000000", -- 0
           
@@ -292,13 +293,14 @@ type ROM_MEMORY_array is array(0 to 85) of std_logic_vector(15 downto 0);
 		  73=> "1011001000100000", -- LOAD DIRECCION MEMORIA 32 in r3
 		  74=> "1101000000000000", -- send r1 to display
 		  
-		  75=> "1011001100100001", -- LOAD DIRECCION MEMORIA 33 in r4
+		  75=> "0001000001010010", -- SALTO A LA DIRECCION 82 DIRECTO JMP
+		  --75=> "0100100001001011", -- BS reg r3 SALTO A LA DIRECCION 82
+		  
+		  --75=> "1011001100100001", -- LOAD DIRECCION MEMORIA 33 in r4
 		  76=> "0000001100000000", -- send r4 to acc
 		  77=> "1000101000000000", -- SUBTRACR R3 - acc and store in r3
-		  --78=> "1000101000000000", -- SUBTRACR R3 - acc and store in 
 		  78=> "1101000000000000", -- send r1 to display
-		  79=> "0011100001001011", -- BNZ regC
-		  --79=> "0011100001001011", -- BNZ regC
+		  79=> "0011100001001011", -- BNZ reg 3
 		  
 		  80=> "1011000100100010", -- LOAD DIRECCION MEMORIA 34 in r1
 		  81=> "1101000000000000", -- send r1 to display
@@ -320,7 +322,7 @@ signal dato_cmp_1: std_logic_vector(15 downto 0);
 signal dato_cmp_2: std_logic_vector(15 downto 0);
 signal eq_cmp, lt_cmp, gt_cmp, enable_cmp: std_logic;
 
- constant division_ratio: integer := 3333;
+ constant division_ratio: integer := 3333;--1;--3333;
  signal counter: integer range 0 to division_ratio:=0;
 signal clk: std_logic;
 
@@ -362,7 +364,7 @@ process(clkf, rst)
     end process;
 
 process (clkf, rst) is
-type estados is (init, fetch, decode, load,load1,load2, operation,operation1,endprog,send,jmp,jalr,comp,bnc,bnz,bnv,move,bs,ret, bnz2);
+type estados is (init, fetch, decode, load,load1,load2, operation,operation1,endprog,send,jmp,jalr,comp,bnc,bnz,bnv,move,bs,ret, bnz2, bs2);
 variable actual, sig: estados;
 
 variable pcvar,dato1,dato2: std_logic_vector(15 downto 0);
@@ -383,7 +385,7 @@ variable Neg: std_logic;
 begin
 if rst='1' then
     actual := init;
-elsif rising_edge (clk) then
+elsif rising_edge (clkf) then
     
                 actual:=sig;
 case actual is 
@@ -419,10 +421,8 @@ case actual is
     sig:=jmp;
     when "0010" =>
     sig:=jalr;
-    
     when "0011" =>
     sig:=bnz;
-   
     when "0100" =>
     sig:=bs;
     when "0101" =>
@@ -510,7 +510,7 @@ case actual is
 
 
    --             saltos            --
-  --          JUMP            --
+  --          JUMP            --   -- FUNCIONA
     when jmp=>
         pcreg:=mdr(7 downto 0); 
         sig:=fetch;
@@ -522,8 +522,7 @@ case actual is
     when ret=>
         pcreg:= ret_pc;
         ret_pc:="00000000";
-    --          BNZ      -- Compara registro especifico     
-    
+    --          BNZ      -- Compara registro especifico   -- FUNCIONA  
     when bnz=>
     dato1:= "0000000000000000";
     case cir(3 downto 2) is
@@ -536,10 +535,6 @@ case actual is
     enable_cmp <= '1';
     dato_cmp_1 <= dato1;
     dato_cmp_2 <= dato2;
-    -- enable_cmp := '1';
-    -- comparer(dato1,dato2,enable_cmp,gt,eq,lt);
-    -- enable_cmp := '0';
-    -- equal <= eq;
     sig:=bnz2;
     when bnz2 =>
     if(eq_cmp = '1') then 
@@ -549,7 +544,6 @@ case actual is
         sig:=fetch;
     end if;
     enable_cmp <= '0';
-    
     --          BS            -- Compara registro especifico
     when bs=>
     case cir(3 downto 2) is
@@ -559,10 +553,16 @@ case actual is
         when "11"=>dato2:=regD;
         when others=>dato2:=regA;
     end case;
-    if(dato2(15) = '1') then 
+    enable_cmp <= '1';
+    dato_cmp_1 <= "0000000000000001";
+    dato_cmp_2 <= "000000000000000"&dato2(15);
+    sig:=bs2;
+    when bs2=>
+    if(eq_cmp = '1') then 
         pcreg:=mdr(7 downto 0); 
     end if;
     sig:=fetch;
+    enable_cmp <= '0';
      --          BNC            --  Compara la operacion de add anterior si hubo carry
     when bnc=>
     if(carry = '1') then 
